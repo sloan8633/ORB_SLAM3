@@ -1,5 +1,130 @@
 # ORB-SLAM3
 
+Fork自ORB-SLAM3，增加了Ubuntu20.04下的环境配置脚本，并修改了源文件`/include/LoopClosing.h`做g++版本适配。  
+
+依赖项版本
+
+- OpenCV 3.4.12
+- Eigen 3.3.9
+
+
+## 1. 依赖项的安装
+
+### 1.1 OpenCV 3.4.12
+```sh
+sudo apt-get update \
+&& sudo apt -y upgrade \
+&& sudo apt install build-essential libssl-dev libffi-dev --yes \
+&& sudo apt-get install gcc g++ --yes \
+&& sudo apt-get install python-dev python-numpy --yes \
+&& sudo apt-get install python3-dev python3-numpy python3-pip --yes \
+&& sudo apt-get install git unzip cmake pkg-config --yes \
+&& sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev --yes \
+&& sudo apt-get install libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev --yes \
+&& sudo apt-get install libxvidcore-dev libx264-dev --yes \
+&& sudo apt-get install libgtk2.0-dev --yes \
+&& sudo apt-get install libgtk-3-dev --yes \
+&& sudo apt-get install libpng-dev libjpeg-dev libopenexr-dev libtiff-dev libwebp-dev --yes \
+&& OPENCV_VERSION="3.4.12" \
+&& sudo apt-get update \
+&& cd ~ \
+&& wget https://github.com/opencv/opencv/archive/$OPENCV_VERSION.zip \
+&& mv $OPENCV_VERSION.zip opencv_$OPENCV_VERSION.zip \
+&& mkdir opencv \
+&& unzip opencv_$OPENCV_VERSION.zip -d opencv \
+&& cd ~/opencv/opencv-$OPENCV_VERSION \
+&& sudo apt-get update \
+&& cd ~/opencv/opencv-$OPENCV_VERSION \
+&& mkdir build \
+&& cd build \
+&& cmake -D CMAKE_BUILD_TYPE=RELEASE \
+-D ENABLE_PRECOMPILED_HEADERS=OFF \
+-D CMAKE_INSTALL_PREFIX=/usr/local \
+-D INSTALL_PYTHON_EXAMPLES=ON \
+-D BUILD_EXAMPLES=ON .. \
+&& make -j$(nproc) \
+&& sudo make install \
+&& sudo ldconfig
+```
+
+
+### 1.2 Pangolin
+```sh
+sudo apt install libgl1-mesa-dev libglew-dev cmake libpython2.7-dev pkg-config libegl1-mesa-dev libwayland-dev libxkbcommon-dev wayland-protocols libboost-all-dev --yes \
+&& cd ~ \
+&& git clone https://github.com/stevenlovegrove/Pangolin.git Pangolin \
+&& cd Pangolin \
+&& mkdir build \
+&& cd build \
+&& cmake .. \
+&& cmake --build .
+```
+
+### 1.3 Eigen 3.3.9
+```sh
+cd ~ \
+&& wget https://github.com/sloan8633/eigen-storage/raw/master/eigen-3.3.9.zip \
+&& unzip eigen-3.3.9.zip \
+&& cd eigen-3.3.9 \
+&& mkdir build \
+&& cd build \
+&& cmake .. \
+&& sudo make install
+```
+
+### 1.4 DBoW2
+```sh
+cd ~ \
+&& git clone https://github.com/shinsumicco/DBoW2.git \
+&& cd DBoW2 \
+&& mkdir build && cd build \
+&& cmake \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr/local \
+    .. \
+&& make -j$(nproc) \
+&& sudo make install
+```
+
+### 1.5 g2o
+```sh
+cd ~ \
+&& git clone https://github.com/RainerKuemmerle/g2o.git \
+&& cd g2o \
+&& git checkout 9b41a4ea5ade8e1250b9c1b279f3a9c098811b5a \
+&& mkdir build && cd build \
+&& cmake \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr/local \
+    -DCMAKE_CXX_FLAGS=-std=c++11 \
+    -DBUILD_SHARED_LIBS=ON \
+    -DBUILD_UNITTESTS=OFF \
+    -DBUILD_WITH_MARCH_NATIVE=ON \
+    -DG2O_USE_CHOLMOD=OFF \
+    -DG2O_USE_CSPARSE=ON \
+    -DG2O_USE_OPENGL=OFF \
+    -DG2O_USE_OPENMP=ON \
+    .. \
+&& make -j$(nproc) \
+&& sudo make install
+```
+
+## 2. 下载并编译ORB-SLAM3
+这里使用本repo进行SLAM3在Ubuntu20.04上的编译，修改了`include/LoopClosing.h`第50行的内容，适配Ubuntu20.04上高版本的g++。  
+
+```sh
+cd ~ \
+&& git clone https://github.com/sloan8633/ORB_SLAM3.git ORB_SLAM3 \
+&& cd ORB_SLAM3 \
+&& chmod +x build.sh \
+&& ./build.sh
+```
+
+
+>下面是原仓库内容
+--------------------------------------------------------
+
+
 ### V0.3: Beta version, 4 Sep 2020
 **Authors:** Carlos Campos, Richard Elvira, Juan J. Gómez Rodríguez, [José M. M. Montiel](http://webdiis.unizar.es/~josemari/), [Juan D. Tardos](http://webdiis.unizar.es/~jdtardos/).
 
